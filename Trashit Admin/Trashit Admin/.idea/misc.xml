@@ -3,6 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/UTN/laboratorio v/tp integrador/Github/TrashIT-Admin/Trashit Admin/Trashit Admin/app/src/main/res/layout/fragment_profile.xml" value="0.25" />
+        <entry key="..\:/UTN/laboratorio v/tp integrador/Github/TrashIT-Admin/Trashit Admin/Trashit Admin/app/src/main/res/layout/fragment_settings.xml" value="0.1" />
         <entry key="..\:/Users/nmansilla/Documents/dev/Trashit/Trashit Admin 2/Trashit Admin/app/src/main/res/layout/activity_inicio.xml" value="0.33" />
         <entry key="..\:/Users/nmansilla/Documents/dev/Trashit/Trashit Admin 2/Trashit Admin/app/src/main/res/layout/fragment_view_listado_materiales.xml" value="0.15841584158415842" />
         <entry key="..\:/Users/nmansilla/Documents/dev/Trashit/Trashit Admin 2/Trashit Admin/app/src/main/res/layout/fragment_view_modificacion_materiales.xml" value="0.5" />

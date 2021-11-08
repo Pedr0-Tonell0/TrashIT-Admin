@@ -14,18 +14,19 @@
         android:layout_marginRight="60dp"
         android:hint="Id"
         android:layout_marginTop="20dp"></EditText>
+
     <Button
         android:id="@+id/Buscar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/Id"
         android:layout_marginLeft="60dp"
         android:layout_marginRight="60dp"
-        android:text="Buscar"
         android:backgroundTint="#2E7D32"
+        android:text="Buscar"
         android:textColor="#FFFFFF"
         android:textSize="16sp"
-        android:textStyle="bold"
-        android:layout_below="@+id/Id"></Button>
+        android:textStyle="bold"></Button>
     <EditText
         android:id="@+id/Latitud"
         android:layout_width="match_parent"
@@ -54,30 +55,47 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:layout_below="@id/Direccion"/>
+
     <Spinner
         android:id="@+id/Material"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_below="@id/Barrio"/>
+        android:layout_below="@id/Barrio"
+        android:layout_marginTop="20dp" />
+
+    <TableLayout
+        android:id="@+id/tablaMateriales"
+        android:layout_width="match_parent"
+        android:layout_height="176dp">
+
+        <TableRow
+            android:id="@+id/registroTabla"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+        </TableRow>
+
+    </TableLayout>
     <Button
         android:id="@+id/Modificar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Modificar"
+        android:layout_below="@+id/Categoria"
         android:backgroundTint="#2E7D32"
+        android:text="Modificar"
         android:textColor="#FFFFFF"
         android:textSize="16sp"
-        android:textStyle="bold"
-        android:layout_below="@+id/Categoria"></Button>
+        android:textStyle="bold"></Button>
+
     <Button
         android:id="@+id/Eliminar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Eliminar"
+        android:layout_below="@+id/Categoria"
         android:backgroundTint="#2E7D32"
+        android:text="Eliminar"
         android:textColor="#FFFFFF"
         android:textSize="16sp"
-        android:textStyle="bold"
-        android:layout_below="@+id/Categoria"></Button>
+        android:textStyle="bold"></Button>
 </LinearLayout>

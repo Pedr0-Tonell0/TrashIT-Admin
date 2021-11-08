@@ -10,6 +10,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.Toast;
 
 public class ViewModificacionPuntos extends Fragment {
@@ -19,6 +21,10 @@ public class ViewModificacionPuntos extends Fragment {
     Button modificar, buscar, eliminar;
     Spinner material, barrio;
     Puntos Puntos;
+    TableLayout tabla;
+    TableRow registro;
+    Button botonRegistroMaterial ;
+
     protected ArrayAdapter<CharSequence> adapter;
     public static ViewModificacionPuntos newInstance() {
 
@@ -27,7 +33,7 @@ public class ViewModificacionPuntos extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable final ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_profile,container,false);
         modificar = (Button) v.findViewById(R.id.Modificar);
         buscar = (Button) v.findViewById(R.id.Buscar);
@@ -38,10 +44,16 @@ public class ViewModificacionPuntos extends Fragment {
         id = (EditText) v.findViewById(R.id.Id);
         barrio = (Spinner) v.findViewById(R.id.Barrio);
         material = (Spinner) v.findViewById(R.id.Material);
+        tabla = (TableLayout) v.findViewById(R.id.tablaMateriales);
+        registro = (TableRow) v.findViewById(R.id.registroTabla);
+
         GetBarriosMateriales();
         buscar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                tabla.removeViews(1, Math.max(0, tabla.getChildCount() - 1));
+                tabla.removeAllViews();
+
                 if(id.getText().toString().equals(""))
                 {
                     Toast.makeText(getContext(), "Para buscar es obligatorio ingresar un ID",Toast.LENGTH_SHORT).show();
@@ -49,6 +61,7 @@ public class ViewModificacionPuntos extends Fragment {
                 else {
                     String IdRegistro = id.getText().toString();
                     SearchPuntos(IdRegistro);
+                    GetBarriosMateriales(IdRegistro);
                 }
             }
         });
@@ -167,7 +180,11 @@ public class ViewModificacionPuntos extends Fragment {
         return v;
     }
     public void GetBarriosMateriales() {
-        TransNegocioDropDown2 task = new TransNegocioDropDown2(barrio,material,getContext());
+        TransNegocioDropDown2 task = new TransNegocioDropDown2(barrio,material,getContext(),tabla,registro);
+        task.execute();
+    }
+    public void GetBarriosMateriales(String idABuscar) {
+        TransNegocioDropDown2 task = new TransNegocioDropDown2(barrio,material,getContext(),tabla,registro,idABuscar);
         task.execute();
     }
     public void SearchPuntos(String IdRegistro) {
