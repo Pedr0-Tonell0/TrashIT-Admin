@@ -1,5 +1,8 @@
 package com.learn2crack.swipeview;
 
+import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,21 +12,31 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.Set;
 
 public class ViewModificacionPuntos extends Fragment {
 
     public static final String TITLE = "MODIFICACION";
     EditText latitud, longitud, direccion, id;
     Button modificar, buscar, eliminar;
+    Integer punto;
     Spinner material, barrio;
     Puntos Puntos;
     TableLayout tabla;
     TableRow registro;
+    TextView textView;
     Button botonRegistroMaterial ;
+    Button boton ;
+    LinearLayout liner ;
+    SharedPreferences pref ;
+    Set<String> listaDeMateriales;
 
     protected ArrayAdapter<CharSequence> adapter;
     public static ViewModificacionPuntos newInstance() {
@@ -47,7 +60,8 @@ public class ViewModificacionPuntos extends Fragment {
         tabla = (TableLayout) v.findViewById(R.id.tablaMateriales);
         registro = (TableRow) v.findViewById(R.id.registroTabla);
 
-        GetBarriosMateriales();
+       // GetBarriosMateriales();
+
         buscar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -59,9 +73,38 @@ public class ViewModificacionPuntos extends Fragment {
                     Toast.makeText(getContext(), "Para buscar es obligatorio ingresar un ID",Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    String IdRegistro = id.getText().toString();
+                    cargaDatosDespuesModificacion();
+                   /* String IdRegistro = id.getText().toString();
                     SearchPuntos(IdRegistro);
                     GetBarriosMateriales(IdRegistro);
+                    pref =  getContext().getSharedPreferences("listaDeMateriales", Context.MODE_PRIVATE);
+                    listaDeMateriales = pref.getStringSet("listaDeMateriales", null);
+
+                    Integer contador = 0;
+                    for (final String material: listaDeMateriales) {
+                        boton = new Button(getContext());
+                        boton.setId(contador++);
+                        boton.setTag(material);
+                        String idTag = (String) boton.getTag();
+                        String id = String.valueOf(boton.getId());
+                        boton.setText(material.toString());
+
+                        boton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                                Toast.makeText(getContext(), material,Toast.LENGTH_SHORT).show();
+                                eliminarMaterialDePunto(material);
+
+                            }
+                        });
+                        registro = new TableRow(getContext());
+                        registro.addView(boton);
+                        tabla.addView(registro);
+
+                    }*/
+
+
                 }
             }
         });
@@ -180,15 +223,16 @@ public class ViewModificacionPuntos extends Fragment {
         return v;
     }
     public void GetBarriosMateriales() {
-        TransNegocioDropDown2 task = new TransNegocioDropDown2(barrio,material,getContext(),tabla,registro);
+        TransNegocioDropDown2 task = new TransNegocioDropDown2(barrio,material,getContext());
         task.execute();
     }
     public void GetBarriosMateriales(String idABuscar) {
-        TransNegocioDropDown2 task = new TransNegocioDropDown2(barrio,material,getContext(),tabla,registro,idABuscar);
+        TransNegocioDropDown2 task = new TransNegocioDropDown2(barrio,material,getContext(),idABuscar);
         task.execute();
     }
     public void SearchPuntos(String IdRegistro) {
         TransNegocioSearchPuntos task = new TransNegocioSearchPuntos(getContext(),IdRegistro,id, latitud, longitud, direccion, barrio, material);
+
         task.execute();
     }
     public void DeletePuntos(String IdRegistro) {
@@ -198,5 +242,48 @@ public class ViewModificacionPuntos extends Fragment {
     public void UpdatePuntos() {
         TransNegocioUpdatePuntos task = new TransNegocioUpdatePuntos(getContext(),Puntos);
         task.execute();
+    }
+    public void eliminarMaterialDePunto(String materialABorrar) {
+        Integer IdRegistro = Integer.parseInt(id.getText().toString());
+
+        TransNegocioEliminarMaterialDePunto task = new TransNegocioEliminarMaterialDePunto(getContext(),materialABorrar,IdRegistro);
+        task.execute();
+
+        cargaDatosDespuesModificacion();
+    }
+
+    public void cargaDatosDespuesModificacion(){
+        tabla.removeAllViewsInLayout();
+        tabla.removeAllViews();
+        String IdRegistro = id.getText().toString();
+        SearchPuntos(IdRegistro);
+        GetBarriosMateriales(IdRegistro);
+        pref =  getContext().getSharedPreferences("listaDeMateriales", Context.MODE_PRIVATE);
+        listaDeMateriales = pref.getStringSet("listaDeMateriales", null);
+
+        Integer contador = 0;
+        for (final String material: listaDeMateriales) {
+            boton = new Button(getContext());
+            boton.setId(contador++);
+            String textoBoton = "Eliminar " + material.toString();
+            boton.setTag(material);
+            String idTag = (String) boton.getTag();
+            String id = String.valueOf(boton.getId());
+            boton.setText(textoBoton);
+
+            boton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Toast.makeText(getContext(), material,Toast.LENGTH_SHORT).show();
+                    eliminarMaterialDePunto(material);
+
+                }
+            });
+            registro = new TableRow(getContext());
+            registro.addView(boton);
+            tabla.addView(registro);
+
+        }
     }
 }

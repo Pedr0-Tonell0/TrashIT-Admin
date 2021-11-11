@@ -32,7 +32,6 @@ public class Login extends AppCompatActivity {
                 {
                     ValidarCredenciales(usuario.getText().toString(),contrasenia.getText().toString());
                 }
-
             }
         });
     }

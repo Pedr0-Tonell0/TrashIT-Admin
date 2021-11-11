@@ -1,6 +1,7 @@
 package com.learn2crack.swipeview;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.view.View;
 import android.webkit.WebIconDatabase;
@@ -17,6 +18,10 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 
 public class TransNegocioDropDown2 extends AsyncTask<String,  Void, String> {
@@ -28,27 +33,24 @@ public class TransNegocioDropDown2 extends AsyncTask<String,  Void, String> {
     private Context context;
     ArrayAdapter<String> comboAdapterBarrio;
     ArrayAdapter<String> comboAdapterMateriales;
-    TableRow registro;
-    TableLayout tabla;
-    TextView textView;
     private String idPunto = "0";
+    SharedPreferences pref ;
+    Set<String> listaDeMateriales = new HashSet<>();
 
-    public TransNegocioDropDown2(Spinner lv1, Spinner lv2, Context ct, TableLayout tab, TableRow row)
+
+    public TransNegocioDropDown2(Spinner lv1, Spinner lv2, Context ct)
     {
         lvBarrios = lv1;
         lvMateriales = lv2;
         context = ct;
-        tabla = tab;
-        registro = row;
     }
-    public TransNegocioDropDown2(Spinner lv1, Spinner lv2, Context ct, TableLayout tab, TableRow row,String idABuscar)
+    public TransNegocioDropDown2(Spinner lv1, Spinner lv2, Context ct, String idABuscar)
     {
         lvBarrios = lv1;
         lvMateriales = lv2;
         context = ct;
-        tabla = tab;
-        registro = row;
         idPunto = idABuscar;
+
 
     }
 
@@ -61,6 +63,9 @@ public class TransNegocioDropDown2 extends AsyncTask<String,  Void, String> {
             Statement st = con.createStatement();
             ResultSet rs;
             listMateriales.clear();
+            listaDeMateriales.clear();
+            listBarrios.clear();
+
             //if(idPunto != 0){
               //   rs = st.executeQuery("select descripcion from Barrio where id = "+idPunto);
            // }
@@ -73,7 +78,7 @@ public class TransNegocioDropDown2 extends AsyncTask<String,  Void, String> {
                 listBarrios.add(item);
             }
             if(idPunto != "0"){
-                rs = st.executeQuery("select m.descripcion from Material as m join Punto_Materiales as pm on m.ID = pm.ID_Material where ID_Punto = "+idPunto);
+                rs = st.executeQuery("select m.descripcion from Material as m join Punto_Materiales as pm on m.ID = pm.ID_Material where Baja is null and ID_Punto = "+idPunto);
             }
             else
             {
@@ -83,8 +88,12 @@ public class TransNegocioDropDown2 extends AsyncTask<String,  Void, String> {
             while(rs.next()) {
                 String item = rs.getString("descripcion");
                 listMateriales.add(item);
+                if(idPunto != "0") {
+                    listaDeMateriales.add(item);
+                }
             }
             response = "Conexion exitosa";
+            con.close();
         }
         catch(Exception e) {
             e.printStackTrace();
@@ -95,31 +104,22 @@ public class TransNegocioDropDown2 extends AsyncTask<String,  Void, String> {
     @Override
     protected void onPostExecute(String response) {
 
-        Integer contador = 0;
-        for (String material: listMateriales) {
-
-
-            Button boton = new Button(context);
-            boton.setId(contador);
-
-           // boton.setBackgroundResource(R.drawable._5422);
-           // boton.getLayoutParams().height = 20;
-            //boton.getLayoutParams().width = 20;
-            registro = new TableRow(context);
-            textView = new TextView(context);
-            textView.setText(material);
-            registro.addView(boton);
-            registro.addView(textView);
-            tabla.addView(registro);
-            contador ++;
-
-
-        }
-
         comboAdapterBarrio = new ArrayAdapter<String>(context,android.R.layout.simple_spinner_item, listBarrios);
         lvBarrios.setAdapter(comboAdapterBarrio);
         comboAdapterMateriales = new ArrayAdapter<String>(context,android.R.layout.simple_spinner_item, listMateriales);
         lvMateriales.setAdapter(comboAdapterMateriales);
+
+
+
+        if( !listaDeMateriales.isEmpty()){
+            pref = context.getSharedPreferences("listaDeMateriales",Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putStringSet("listaDeMateriales",listaDeMateriales);
+            editor.commit();
+        }
+
+
+
     }
 
 }
